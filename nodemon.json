@@ -1,0 +1,4 @@
+{
+  "ignore" : ["node_modules/!(@apollo/gateway)/**/*", "node_modules/!(apollo-server)/**/*"],
+  "ignoreRoot": [".git"]
+}

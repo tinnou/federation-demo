@@ -8,7 +8,7 @@
     "start-service-products": "nodemon services/products/index.js",
     "start-service-inventory": "nodemon services/inventory/index.js",
     "start-services": "concurrently \"npm:start-service-*\"",
-    "postinstall": "lerna bootstrap"
+    "postinstall": "lerna bootstrap && npm link apollo-server && npm link @apollo/gateway"
   },
   "devDependencies": {
     "lerna": "latest",
@@ -18,6 +18,6 @@
   "dependencies": {
     "@apollo/gateway": "latest",
     "apollo-server": "latest",
-    "graphql": "latest"
+    "graphql": "14.6.0"
   }
 }

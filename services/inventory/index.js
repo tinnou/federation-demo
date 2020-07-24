@@ -23,10 +23,23 @@ const resolvers = {
       // free for expensive items
       if (object.price > 1000) return 0;
       // estimate is based on weight
-      return object.weight * 0.5;
+      return Math.ceil(object.weight * 0.5);
     }
   }
 };
+
+
+const myPlugin = {
+  // Fires whenever a GraphQL request is received from a client.
+  requestDidStart(requestContext) {
+    if (requestContext.request.operationName === "IntrospectionQuery") {
+      return
+    }
+    console.log('Query:\n' + requestContext.request.query);
+    return {}
+  },
+};
+
 
 const server = new ApolloServer({
   schema: buildFederatedSchema([
@@ -34,7 +47,8 @@ const server = new ApolloServer({
       typeDefs,
       resolvers
     }
-  ])
+  ]),
+  plugins: [myPlugin]
 });
 
 server.listen({ port: 4004 }).then(({ url }) => {

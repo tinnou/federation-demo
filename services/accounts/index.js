@@ -25,6 +25,20 @@ const resolvers = {
     }
   }
 };
+const myPlugin = {
+  // Fires whenever a GraphQL request is received from a client.
+  requestDidStart(requestContext) {
+    if (requestContext.request.operationName === "IntrospectionQuery" || requestContext.request.operationName === "__ApolloGetServiceDefinition__") {
+      return
+    }
+    console.log('Query:\n' + requestContext.request.query);
+    return {
+      willSendResponse(requestContextWillSendResponse) {
+         console.log("Will send response: " + JSON.stringify(requestContextWillSendResponse.response))
+      }
+    }
+  },
+};
 
 const server = new ApolloServer({
   schema: buildFederatedSchema([
@@ -32,7 +46,8 @@ const server = new ApolloServer({
       typeDefs,
       resolvers
     }
-  ])
+  ]),
+  plugins: [myPlugin]
 });
 
 server.listen({ port: 4001 }).then(({ url }) => {

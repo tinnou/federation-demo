@@ -27,13 +27,25 @@ const resolvers = {
   }
 };
 
+const myPlugin = {
+  // Fires whenever a GraphQL request is received from a client.
+  requestDidStart(requestContext) {
+    if (requestContext.request.operationName === "IntrospectionQuery") {
+      return
+    }
+    console.log('Query:\n' + requestContext.request.query);
+    return {}
+  },
+};
+
 const server = new ApolloServer({
   schema: buildFederatedSchema([
     {
       typeDefs,
       resolvers
     }
-  ])
+  ]),
+  plugins: [myPlugin]
 });
 
 server.listen({ port: 4003 }).then(({ url }) => {

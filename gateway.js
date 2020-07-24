@@ -15,8 +15,21 @@ const gateway = new ApolloGateway({
   ],
 
   // Experimental: Enabling this enables the query plan view in Playground.
-  __exposeQueryPlanExperimental: false,
+  __exposeQueryPlanExperimental: true,
+
+  debug: true
 });
+
+const myPlugin = {
+  // Fires whenever a GraphQL request is received from a client.
+  requestDidStart(requestContext) {
+    if (requestContext.request.operationName === "IntrospectionQuery") {
+      return
+    }
+    console.log('Query:\n' + requestContext.request.query);
+    return {}
+  },
+};
 
 (async () => {
   const server = new ApolloServer({
@@ -29,6 +42,10 @@ const gateway = new ApolloGateway({
 
     // Subscriptions are unsupported but planned for a future Gateway version.
     subscriptions: false,
+
+    debug: true,
+
+    plugins: [myPlugin]
   });
 
   server.listen().then(({ url }) => {
